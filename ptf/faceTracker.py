@@ -6,10 +6,6 @@ import cv2
 
 
 class FaceTracker():
-    FLIP_HORIZONTAL = 0
-    FLIP_VERTICAL = 1
-    FLIP_HORIZONTAL_VERTICAL = -1
-
     COLOR_BLUE = (255, 0, 0)
     COLOR_GREEN = (0, 255, 0)
     COLOR_RED = (0, 0, 255)
@@ -17,7 +13,6 @@ class FaceTracker():
     BORDER = 2
 
     def __init__(self):
-        self.camera = cv2.VideoCapture(0)
         xmlClassifierPaths = [
             # when python-opencv(-contrib?) is installed via pip
             pkg_resources.resource_filename(
@@ -38,9 +33,7 @@ class FaceTracker():
         self.xMax = 0
         self.yMax = 0
 
-    def getCoordinates(self):
-        ret, frame = self.camera.read()
-        frame = cv2.flip(frame, FaceTracker.FLIP_HORIZONTAL)
+    def getCoordinates(self, frame):
         faces = self.classifier.detectMultiScale(frame)
 
         closest = None
@@ -68,8 +61,6 @@ class FaceTracker():
                 FaceTracker.COLOR_GREEN,
                 FaceTracker.BORDER
             )
-        cv2.imshow('frame', frame)
-        cv2.waitKey(1)
 
         if (closest is not None):
             middle = self._calculateMiddleOfSquare(
@@ -81,14 +72,10 @@ class FaceTracker():
             self.x = middle[0]
             self.y = middle[1]
 
-        return (self.x, self.y, self.xMax, self.yMax,)
+        return (self.x, self.y, self.xMax, self.yMax, frame)
 
     def _calculateMiddleOfSquare(self, x, y, width, height):
         return ((x + width/2), (y + height/2),)
 
     def _calculateDistance(self, x1, y1, x2, y2):
         return math.sqrt((x2 - x1)**2 + (y2 - y1)**2);
-
-    def shutdown(self):
-        self.camera.release()
-        cv2.destroyAllWindows()

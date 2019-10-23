@@ -98,16 +98,14 @@ Recommended but not necessary:
 
     pip3 install --user inputs
     sudo apt install -y python3-opencv opencv-data
+    sudo apt install -y libhdf5-dev libatlas-base-dev libjasper-dev libqtgui4 libqt4-test
+
 
 ## Using it
 
 To steer the camera with a gamepad, start
 
-    python3 track.py
-
-To get a preview window for the camera:
-
-    raspivid -t 0 -p 100,100 -vf
+    main.py
 
 Note that this can mess up the OpenCV python code later, possibly requiring
 a reboot.

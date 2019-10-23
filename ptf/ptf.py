@@ -36,17 +36,21 @@ class PTF():
         self.gamepad = InputDevice(controllerInfo.path)
 
     def shutdown(self):
-        self.faceTracker.shutdown()
+        self.camera.shutdown()
 
     def run(self):
         self.initialize()
 
         while True:
-            x, y, xMax, yMax = self.faceTracker.getCoordinates()
+            frame = self.camera.getFrame()
 
             if (self.faceTracking):
+                x, y, xMax, yMax, frame = self.faceTracker.getCoordinates(frame)
                 self.camera.moveX(self.camera.scaleX(0, x, xMax))
                 self.camera.moveY(self.camera.scaleY(0, y, yMax))
+
+            if (not self.camera.render(frame)):
+                return
 
             try:
                 for event in self.gamepad.read():
