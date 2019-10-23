@@ -27,6 +27,6 @@ setup(
         'opencv-contrib-python>=4.1.1.26',
         'opencv-python>=4.1.1.26',
         'pigpio>=1.44',
-        'inputs>=0.5',
+        'evdev>=1.2.0',
     ],
 )
