@@ -24,8 +24,8 @@ setup(
         'main.py',
     ],
     install_requires=[
-        'opencv-contrib-python>=4.1.1.26',
-        'opencv-python>=4.1.1.26',
+        'opencv-contrib-python>=3.4.3.18',
+        'opencv-python>=3.4.3.18',
         'pigpio>=1.44',
         'evdev>=1.2.0',
     ],
