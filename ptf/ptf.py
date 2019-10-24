@@ -58,7 +58,7 @@ class PTF():
                         self.faceTracking = not self.faceTracking
                         print(f'FaceTracking: {self.faceTracking}')
 
-                    if (not self.faceTracking):
+                    if (not self.faceTracking and event.type == ecodes.EV_ABS):
                         if event.code == ecodes.ABS_X:
                             self.camera.moveX(
                                 self.camera.scaleX(

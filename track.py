@@ -1,4 +1,4 @@
-import pigpio
+# import pigpio
 from inputs import devices
 
 if len(devices.gamepads) == 0:
@@ -8,7 +8,7 @@ if len(devices.gamepads) > 1:
 
 gamepad = devices.gamepads[0]
 
-pi = pigpio.pi()
+# pi = pigpio.pi()
 
 print('Ready.')
 
@@ -42,6 +42,5 @@ while True:
         if coords != prev_coords:
             print(coords)
 
-            pi.set_servo_pulsewidth(2, coord_to_servo(coords[0]))
-            pi.set_servo_pulsewidth(3, coord_to_servo(coords[1]))
-
+            # pi.set_servo_pulsewidth(2, coord_to_servo(coords[0]))
+            # pi.set_servo_pulsewidth(3, coord_to_servo(coords[1]))

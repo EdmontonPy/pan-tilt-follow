@@ -27,7 +27,7 @@ class Camera():
 
     def getFrame(self):
         ret, frame = self.camera.read()
-        # frame = cv2.flip(frame, Camera.FLIP_HORIZONTAL)
+        frame = cv2.flip(frame, Camera.FLIP_VERTICAL)
         return frame
 
     def render(self, frame):
@@ -52,7 +52,6 @@ class Camera():
             print(f'Value x is out of range {x}')
 
         if (self.x != x):
-            print(f'Moving X to {x}')
             # self.pi.set_servo_pulsewidth(Camera.X_PIN, x)
             self.x = x
 
@@ -61,6 +60,5 @@ class Camera():
             print(f'Value y is out of range {y}')
 
         if (self.y != y):
-            print(f'Moving Y to {y}')
             # self.pi.set_servo_pulsewidth(Camera.Y_PIN, y)
             self.y = y
