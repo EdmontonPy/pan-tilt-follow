@@ -12,6 +12,8 @@ class FaceTracker():
 
     BORDER = 2
 
+    RESIZE_FACTOR = 0.25
+
     def __init__(self):
         xmlClassifierPaths = [
             # when python-opencv(-contrib?) is installed via pip
@@ -37,7 +39,7 @@ class FaceTracker():
         originalFrame = frame.copy()
 
         # Make the image smaller to speed up processing
-        frame = cv2.resize(frame, None, fx=0.2, fy=0.2)
+        frame = cv2.resize(frame, None, fx=FaceTracker.RESIZE_FACTOR, fy=FaceTracker.RESIZE_FACTOR)
         # Convert to Gray scale
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         faces = self.classifier.detectMultiScale(frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
@@ -45,7 +47,7 @@ class FaceTracker():
         closest = None
         closestDistnce = None;
 
-        self.yMax, self.xMax, channels = frame.shape
+        self.yMax, self.xMax = frame.shape
         frameCentre = ((self.xMax/2), (self.yMax/2),)
         for (x, y, width, height) in faces:
             faceCentre = self._calculateMiddleOfSquare(x, y, width, height)
@@ -60,10 +62,11 @@ class FaceTracker():
                 closest = (x, y, width, height)
                 closestDistnce = distance
 
+
             cv2.rectangle(
-                frame,
-                (x, y),
-                (x + width, y + height),
+                originalFrame,
+                (int(x*(1/FaceTracker.RESIZE_FACTOR)), int(y*(1/FaceTracker.RESIZE_FACTOR))),
+                (int(x*(1/FaceTracker.RESIZE_FACTOR) + (width*(1/FaceTracker.RESIZE_FACTOR))), int(y*(1/FaceTracker.RESIZE_FACTOR) + (height*(1/FaceTracker.RESIZE_FACTOR)))),
                 FaceTracker.COLOR_GREEN,
                 FaceTracker.BORDER
             )
