@@ -34,7 +34,13 @@ class FaceTracker():
         self.yMax = 0
 
     def getCoordinates(self, frame):
-        faces = self.classifier.detectMultiScale(frame)
+        originalFrame = frame.copy()
+
+        # Make the image smaller to speed up processing
+        frame = cv2.resize(frame, None, fx=0.2, fy=0.2)
+        # Convert to Gray scale
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        faces = self.classifier.detectMultiScale(frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
 
         closest = None
         closestDistnce = None;
@@ -72,7 +78,7 @@ class FaceTracker():
             self.x = middle[0]
             self.y = middle[1]
 
-        return (self.x, self.y, self.xMax, self.yMax, frame)
+        return (self.x, self.y, self.xMax, self.yMax, originalFrame)
 
     def _calculateMiddleOfSquare(self, x, y, width, height):
         return ((x + width/2), (y + height/2),)
