@@ -47,8 +47,8 @@ class PTF():
             if (self.faceTracking):
                 x, y, xMax, yMax, frame = self.faceTracker.getCoordinates(frame)
 
-                xDelta = ((x / xMax) - 0.5) * 10
-                yDelta = ((y / yMax) - 0.5) * 10
+                xDelta = int(((x / xMax) - 0.5) * 10)
+                yDelta = int(((y / yMax) - 0.5) * 10)
                 self.camera.moveX(self.camera.x + xDelta)
                 self.camera.moveY(self.camera.y + yDelta)
 

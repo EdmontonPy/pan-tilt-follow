@@ -50,6 +50,7 @@ class Camera():
     def moveX(self, x):
         if (not Camera.X_MIN <= x <= Camera.X_MAX):
             print(f'Value x is out of range {x}')
+            return;
 
         if (self.x != x):
             # self.pi.set_servo_pulsewidth(Camera.X_PIN, x)
@@ -58,6 +59,7 @@ class Camera():
     def moveY(self, y):
         if (not Camera.Y_MIN <= y <= Camera.Y_MAX):
             print(f'Value y is out of range {y}')
+            return;
 
         if (self.y != y):
             # self.pi.set_servo_pulsewidth(Camera.Y_PIN, y)
