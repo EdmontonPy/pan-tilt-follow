@@ -28,5 +28,6 @@ setup(
         'opencv-python>=3.4.3.18',
         'pigpio>=1.44',
         'evdev>=1.2.0',
+        'imutils>=0.5.3',
     ],
 )

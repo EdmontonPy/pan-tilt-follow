@@ -3,6 +3,7 @@ import os.path
 import pkg_resources
 
 import cv2
+import imutils
 
 
 class FaceTracker():
@@ -39,7 +40,8 @@ class FaceTracker():
         originalFrame = frame.copy()
 
         # Make the image smaller to speed up processing
-        frame = cv2.resize(frame, None, fx=FaceTracker.RESIZE_FACTOR, fy=FaceTracker.RESIZE_FACTOR)
+        xMax = frame.shape[1]
+        frame = imutils.resize(frame, width=int(xMax*FaceTracker.RESIZE_FACTOR))
         # Convert to Gray scale
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         faces = self.classifier.detectMultiScale(frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
@@ -47,7 +49,9 @@ class FaceTracker():
         closest = None
         closestDistnce = None;
 
-        self.yMax, self.xMax = frame.shape
+        self.yMax = frame.shape[0]
+        self.xMax = frame.shape[1]
+
         frameCentre = ((self.xMax/2), (self.yMax/2),)
         for (x, y, width, height) in faces:
             faceCentre = self._calculateMiddleOfSquare(x, y, width, height)
