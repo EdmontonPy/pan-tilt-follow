@@ -54,8 +54,8 @@ class PTF():
                     if ((y / yMax) - 0.5 < 0):
                         yDirection = -1
 
-                    xMagnitude = int((((x / xMax) - 0.5) * 10)**3)
-                    yMagnitude = int((((y / yMax) - 0.5) * 10)**3)
+                    xMagnitude = int(abs(((x / xMax) - 0.5) * 10)**3)
+                    yMagnitude = int(abs(((y / yMax) - 0.5) * 10)**3)
 
                     xDelta = xDirection * xMagnitude
                     yDelta = yDirection * yMagnitude
