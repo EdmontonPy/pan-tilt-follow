@@ -13,7 +13,7 @@ class FaceTracker():
 
     BORDER = 2
 
-    RESIZE_FACTOR = 0.25
+    RESIZE_FACTOR = 0.5
 
     def __init__(self):
         xmlClassifierPaths = [

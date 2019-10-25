@@ -47,10 +47,21 @@ class PTF():
             if (self.faceTracking):
                 x, y, xMax, yMax, frame = self.faceTracker.getCoordinates(frame)
                 if (x is not None and y is not None):
-                    xDelta = int((((x / xMax) - 0.5) * 10)**2)
-                    yDelta = int((((y / yMax) - 0.5) * 10)**2)
+                    xDirection = -1
+                    if ((x / xMax) - 0.5 < 0):
+                        xDirection = 1
+                    yDirection = 1
+                    if ((y / yMax) - 0.5 < 0):
+                        yDirection = -1
+
+                    xMagnitude = int((((x / xMax) - 0.5) * 10)**3)
+                    yMagnitude = int((((y / yMax) - 0.5) * 10)**3)
+
+                    xDelta = xDirection * xMagnitude
+                    yDelta = yDirection * yMagnitude
+
                     self.camera.moveX(self.camera.x + xDelta)
-                    self.camera.moveY(self.camera.y - yDelta)
+                    self.camera.moveY(self.camera.y + yDelta)
 
             if (not self.camera.render(frame)):
                 return
