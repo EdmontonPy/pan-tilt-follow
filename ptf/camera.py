@@ -1,5 +1,5 @@
 import cv2
-# import pigpio
+import pigpio
 
 
 class Camera():
@@ -22,8 +22,10 @@ class Camera():
         self.pi = pigpio.pi()
         self.camera = cv2.VideoCapture(0)
 
-        self.x = 128;
-        self.y = 128;
+        self.x = 0
+        self.moveX(((Camera.X_MAX-Camera.X_MIN)/2)+Camera.X_MIN)
+        self.y = 0;
+        self.moveY(((Camera.Y_MAX-Camera.Y_MIN)/2)+Camera.Y_MIN)
 
     def getFrame(self):
         ret, frame = self.camera.read()
