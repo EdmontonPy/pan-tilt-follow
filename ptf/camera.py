@@ -21,11 +21,7 @@ class Camera():
     def __init__(self):
         self.pi = pigpio.pi()
         self.camera = cv2.VideoCapture(0)
-
-        self.x = 0
-        self.moveX(((Camera.X_MAX-Camera.X_MIN)/2)+Camera.X_MIN)
-        self.y = 0;
-        self.moveY(((Camera.Y_MAX-Camera.Y_MIN)/2)+Camera.Y_MIN)
+        self._resetLocation()
 
     def getFrame(self):
         ret, frame = self.camera.read()
@@ -39,7 +35,14 @@ class Camera():
             return False
         return True
 
+    def _resetLocation(self):
+        self.x = 0
+        self.moveX(((Camera.X_MAX-Camera.X_MIN)/2)+Camera.X_MIN)
+        self.y = 0;
+        self.moveY(((Camera.Y_MAX-Camera.Y_MIN)/2)+Camera.Y_MIN)
+
     def shutdown(self):
+        self._resetLocation()
         self.camera.release()
         cv2.destroyAllWindows()
 
