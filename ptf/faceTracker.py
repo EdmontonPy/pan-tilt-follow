@@ -31,17 +31,12 @@ class FaceTracker():
                  xmlClassifierPath = xml
 
         self.classifier = cv2.CascadeClassifier(xmlClassifierPath)
-        self.x = 0
-        self.y = 0
-        self.xMax = 0
-        self.yMax = 0
 
     def getCoordinates(self, frame):
         originalFrame = frame.copy()
 
         # Make the image smaller to speed up processing
-        xMax = frame.shape[1]
-        frame = imutils.resize(frame, width=int(xMax*FaceTracker.RESIZE_FACTOR))
+        frame = imutils.resize(frame, width=int(frame.shape[1]*FaceTracker.RESIZE_FACTOR))
         # Convert to Gray scale
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         faces = self.classifier.detectMultiScale(frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
@@ -49,10 +44,10 @@ class FaceTracker():
         closest = None
         closestDistnce = None;
 
-        self.yMax = frame.shape[0]
-        self.xMax = frame.shape[1]
+        yMax = frame.shape[0]
+        xMax = frame.shape[1]
 
-        frameCentre = ((self.xMax/2), (self.yMax/2),)
+        frameCentre = ((xMax/2), (yMax/2),)
         for (x, y, width, height) in faces:
             faceCentre = self._calculateMiddleOfSquare(x, y, width, height)
 
@@ -75,6 +70,8 @@ class FaceTracker():
                 FaceTracker.BORDER
             )
 
+        x = None
+        y = None
         if (closest is not None):
             middle = self._calculateMiddleOfSquare(
                 closest[0],
@@ -82,10 +79,10 @@ class FaceTracker():
                 closest[2],
                 closest[3]
             )
-            self.x = middle[0]
-            self.y = middle[1]
+            x = middle[0]
+            y = middle[1]
 
-        return (self.x, self.y, self.xMax, self.yMax, originalFrame)
+        return (x, y, xMax, yMax, originalFrame)
 
     def _calculateMiddleOfSquare(self, x, y, width, height):
         return ((x + width/2), (y + height/2),)
