@@ -29,5 +29,6 @@ setup(
         'pigpio>=1.44',
         'evdev>=1.2.0',
         'imutils>=0.5.3',
+        'numpy',
     ],
 )

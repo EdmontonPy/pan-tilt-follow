@@ -61,7 +61,6 @@ class FaceTracker():
                 closest = (x, y, width, height)
                 closestDistnce = distance
 
-
             cv2.rectangle(
                 originalFrame,
                 (int(x*(1/FaceTracker.RESIZE_FACTOR)), int(y*(1/FaceTracker.RESIZE_FACTOR))),

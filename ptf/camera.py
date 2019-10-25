@@ -1,5 +1,5 @@
 import cv2
-import pigpio
+# import pigpio
 
 
 class Camera():
@@ -19,13 +19,13 @@ class Camera():
     WINDOW_NAME = 'Camera'
 
     def __init__(self):
-        self.pi = pigpio.pi()
+        # self.pi = pigpio.pi()
         self.camera = cv2.VideoCapture(0)
         self._resetLocation()
 
     def getFrame(self):
         ret, frame = self.camera.read()
-        frame = cv2.flip(frame, Camera.FLIP_HORIZONTAL_VERTICAL)
+        # frame = cv2.flip(frame, Camera.FLIP_HORIZONTAL_VERTICAL)
         return frame
 
     def render(self, frame):
@@ -58,7 +58,7 @@ class Camera():
             return;
 
         if (self.x != x):
-            self.pi.set_servo_pulsewidth(Camera.X_PIN, x)
+            # self.pi.set_servo_pulsewidth(Camera.X_PIN, x)
             self.x = x
 
     def moveY(self, y):
@@ -67,5 +67,5 @@ class Camera():
             return;
 
         if (self.y != y):
-            self.pi.set_servo_pulsewidth(Camera.Y_PIN, y)
+            # self.pi.set_servo_pulsewidth(Camera.Y_PIN, y)
             self.y = y

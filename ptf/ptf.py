@@ -4,10 +4,13 @@ from evdev import InputDevice, ecodes
 
 from .camera import Camera
 from .faceTracker import FaceTracker
+from .hatCatch import HatCatch
 
 
 class PTF():
+    BUTTON1 = 288
     BUTTON2 = 289
+    BUTTON3 = 290
 
     BUTTON_UP = 1
     BUTTON_DOWN = 0
@@ -17,11 +20,17 @@ class PTF():
 
     CONTROLLER_ID = 'Logitech Dual Action'
 
+    CONTROLLED = 1
+    FACE = 2
+    HAT = 3
+
     def __init__(self):
         self.gamepad = None
         self.faceTracking = False
         self.faceTracker = FaceTracker()
         self.camera = Camera()
+        self.hatCatch = HatCatch()
+        self.state = PTF.CONTROLLED
 
     def initialize(self):
         controllerInfo = None
@@ -44,7 +53,7 @@ class PTF():
         while True:
             frame = self.camera.getFrame()
 
-            if (self.faceTracking):
+            if (self.state == PTF.FACE):
                 x, y, xMax, yMax, frame = self.faceTracker.getCoordinates(frame)
                 if (x is not None and y is not None):
                     xDirection = -1
@@ -63,16 +72,28 @@ class PTF():
                     self.camera.moveX(self.camera.x + xDelta)
                     self.camera.moveY(self.camera.y + yDelta)
 
+            if (self.state == PTF.HAT):
+                frame = self.hatCatch.render(frame)
+
             if (not self.camera.render(frame)):
                 return
 
             try:
                 for event in self.gamepad.read():
-                    if (event.code == PTF.BUTTON2 and event.value == PTF.BUTTON_UP):
-                        self.faceTracking = not self.faceTracking
-                        print(f'FaceTracking: {self.faceTracking}')
+                    if (event.code == PTF.BUTTON1 and event.value == PTF.BUTTON_UP):
+                        self.state = PTF.CONTROLLED
+                        print('State CONTROLLED')
 
-                    if (not self.faceTracking and event.type == ecodes.EV_ABS):
+                    if (event.code == PTF.BUTTON2 and event.value == PTF.BUTTON_UP):
+                        self.state = PTF.FACE
+                        print('State FACE')
+
+                    if (event.code == PTF.BUTTON3 and event.value == PTF.BUTTON_UP):
+                        self.state = PTF.HAT
+                        self.hatCatch.startGame()
+                        print('State HAT')
+
+                    if (self.state == PTF.CONTROLLED and event.type == ecodes.EV_ABS):
                         if event.code == ecodes.ABS_X:
                             self.camera.moveX(
                                 self.camera.scaleX(
