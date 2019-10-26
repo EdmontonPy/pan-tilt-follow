@@ -1,7 +1,11 @@
 # Pan-Tilt-Follow
 
-This demo shows how Python programs can gather data about the world around
-them, process that data, and take actions accordingly.
+This demo from the [Edmonton Python Meetup][EdmontonPy] shows something
+that a couple of people can put together in a couple of days: how Python
+programs can gather data about the world around them, process that data,
+and take actions accordingly.
+
+[EdmontonPy]: https://www.edmontonpy.com
 
 <!--
     A picture of the device should go here after Andrew paints it
