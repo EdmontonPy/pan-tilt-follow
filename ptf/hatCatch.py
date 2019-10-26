@@ -26,6 +26,8 @@ class HatCatch():
     HAT_DROP_TIME = timedelta(seconds=3)
     HAT = cv2.imread('./hat.png', -1)
 
+    FRAME_DELAY = timedelta(milliseconds=1000/15)
+
     def __init__(self):
         xmlClassifierPaths = [
             # when python-opencv(-contrib?) is installed via pip
@@ -46,6 +48,8 @@ class HatCatch():
         self.hats = []
         self.gameStart = None
         self.score = 0
+        self.lastFrame = None
+        self.oldfaces = []
 
     @property
     def running(self):
@@ -57,6 +61,7 @@ class HatCatch():
         self.hats = []
         self.gameStart = datetime.now()
         self.score = 0
+        self.lastFrame = datetime.now()
 
     def render(self, frame):
         renderFrame = frame.copy()
@@ -64,8 +69,10 @@ class HatCatch():
             self._moveHats(frame)
             self._generateHats(frame)
             self._renderHats(renderFrame)
+
             frame, renderFrame, faces = self._getFaces(frame, renderFrame)
             self._detectCollisions(faces)
+            self.lastFrame = datetime.now()
         self._renderScore(renderFrame)
         return renderFrame
 
@@ -185,11 +192,14 @@ class HatCatch():
     def _getFaces(self, frame, renderFrame):
         originalFrame = frame.copy()
 
-        # Make the image smaller to speed up processing
-        frame = imutils.resize(frame, width=int(frame.shape[1]*HatCatch.RESIZE_FACTOR))
-        # Convert to Gray scale
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        faces = self.classifier.detectMultiScale(frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+        faces = self.oldfaces
+        framedelay = datetime.now() - self.lastFrame
+        if (framedelay < HatCatch.FRAME_DELAY):
+            # Make the image smaller to speed up processing
+            frame = imutils.resize(frame, width=int(frame.shape[1]*HatCatch.RESIZE_FACTOR))
+            # Convert to Gray scale
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            faces = self.classifier.detectMultiScale(frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
 
         returnedFaces = []
         for (x, y, width, height) in faces:
