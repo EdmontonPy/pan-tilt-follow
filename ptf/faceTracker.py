@@ -5,6 +5,8 @@ import pkg_resources
 import cv2
 import imutils
 
+from datetime import datetime, timedelta
+
 
 class FaceTracker():
     COLOR_BLUE = (255, 0, 0)
@@ -14,6 +16,8 @@ class FaceTracker():
     BORDER = 2
 
     RESIZE_FACTOR = 0.5
+
+    FRAME_DELAY = timedelta(milliseconds=1000/15)
 
     def __init__(self):
         xmlClassifierPaths = [
@@ -31,15 +35,13 @@ class FaceTracker():
                  xmlClassifierPath = xml
 
         self.classifier = cv2.CascadeClassifier(xmlClassifierPath)
+        self.oldfaces = []
 
     def getCoordinates(self, frame):
-        originalFrame = frame.copy()
+        if self.lastFrame is None:
+            self.lastFrame = datetime.now()
 
-        # Make the image smaller to speed up processing
-        frame = imutils.resize(frame, width=int(frame.shape[1]*FaceTracker.RESIZE_FACTOR))
-        # Convert to Gray scale
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        faces = self.classifier.detectMultiScale(frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+        originalFrame = frame.copy()
 
         closest = None
         closestDistnce = None;
@@ -48,6 +50,16 @@ class FaceTracker():
         xMax = frame.shape[1]
 
         frameCentre = ((xMax/2), (yMax/2),)
+
+        faces = self.oldfaces
+        framedelay = datetime.now() - self.lastFrame
+        if (framedelay < FaceTracker.FRAME_DELAY):
+            # Make the image smaller to speed up processing
+            frame = imutils.resize(frame, width=int(frame.shape[1]*FaceTracker.RESIZE_FACTOR))
+            # Convert to Gray scale
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            faces = self.classifier.detectMultiScale(frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+
         for (x, y, width, height) in faces:
             faceCentre = self._calculateMiddleOfSquare(x, y, width, height)
 
@@ -80,7 +92,7 @@ class FaceTracker():
             )
             x = middle[0]
             y = middle[1]
-
+        self.lastFrame = datetime.now()
         return (x, y, xMax, yMax, originalFrame)
 
     def _calculateMiddleOfSquare(self, x, y, width, height):
