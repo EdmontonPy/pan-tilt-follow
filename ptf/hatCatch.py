@@ -49,7 +49,9 @@ class HatCatch():
 
     @property
     def running(self):
-        return self._running
+        if datetime.now() >= self.gameStart + HatCatch.GAME_RUN_TIME:
+            return False
+        return True
 
     def startGame(self):
         self.hats = []
@@ -58,26 +60,39 @@ class HatCatch():
 
     def render(self, frame):
         renderFrame = frame.copy()
-        self._moveHats(frame)
-        self._generateHats(frame)
-        self._renderHats(renderFrame)
-        frame, renderFrame, faces = self._getFaces(frame, renderFrame)
-        self._detectCollisions(faces)
+        if self.running:
+            self._moveHats(frame)
+            self._generateHats(frame)
+            self._renderHats(renderFrame)
+            frame, renderFrame, faces = self._getFaces(frame, renderFrame)
+            self._detectCollisions(faces)
         self._renderScore(renderFrame)
         return renderFrame
 
     def _renderScore(self, frame):
         font = cv2.FONT_HERSHEY_SIMPLEX
-        cv2.putText(
-            frame,
-            f'Score: {self.score}',
-            (10,450),
-            font,
-            1,
-            HatCatch.COLOR_GREEN,
-            HatCatch.BORDER,
-            cv2.LINE_AA
-        )
+        if self.running:
+            cv2.putText(
+                frame,
+                f'Score: {self.score}',
+                (10,450),
+                font,
+                1,
+                HatCatch.COLOR_GREEN,
+                HatCatch.BORDER,
+                cv2.LINE_AA
+            )
+        else:
+            cv2.putText(
+                frame,
+                f'Final Score: {self.score}',
+                (10,450),
+                font,
+                2,
+                HatCatch.COLOR_RED,
+                HatCatch.BORDER,
+                cv2.LINE_AA
+            )
 
     def _detectCollisions(self, faces):
         updatedHats = []
